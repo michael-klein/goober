@@ -9,9 +9,10 @@ export const getCss = (str, defs, props) =>
   str.reduce((out, next, i) => {
     if (typeof defs[i] == "function") {
       const res = defs[i](props);
+      const attr = res.attributes;
       // If this is a vNode with a className
-      if (res.attributes && res.attributes.className) {
-        return `${out}${next}.${res.attributes.className}`;
+      if (attr && attr.className) {
+        return `${out}${next}.${attr.className}`;
       }
 
       // TODO: Should figure out a better _detection_

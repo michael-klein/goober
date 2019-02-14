@@ -1,7 +1,6 @@
 import { hush } from "../hush";
 import { add } from "./sheet";
 import { parse } from "../parser/parse";
-import { TRIM_RULE } from "../constants";
 
 /**
  * Does the hush-ing of the css declaration and returns the className.
@@ -9,7 +8,7 @@ import { TRIM_RULE } from "../constants";
  * @return {String}
  */
 export const getClassNameForCss = compiled => {
-    const trimmed = compiled.replace(TRIM_RULE, "");
+    const trimmed = compiled.replace(/(\s|\n)/gim, "");
     const hash = "g0" + hush(trimmed).toString(16);
     const parsed = parse("." + hash, compiled).join("");
   

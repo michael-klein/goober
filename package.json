@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "test": "npm run build && npm run size-check",
+    "jest": "jest",
     "clean": "rm -rf dist",
     "size-check": "bundlesize",
     "build": "npm run clean && microbundle --entry src/index.js --output dist --name goober --sourcemap false --format cjs,umd && npm run size-check",
@@ -41,5 +42,11 @@
       "path": "./dist/*.*",
       "maxSize": "900B"
     }
-  ]
+  ],
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-jest": "^24.1.0",
+    "jest": "^24.1.0"
+  }
 }

@@ -1,11 +1,6 @@
-import { parseBlock } from "./parse-block";
-import {
-    NEW_LINE,
-    NEW_LINES_SEL,
-    AT_SEL,
-    REGULAR_SEL,
-    COMMA_SEL
-} from "../constants";
+import { astish } from "./astish";
+import { getBlocks } from "./inner/get-blocks";
+import { parseBlock } from "./inner/parse-block";
 
 /**
  * Parses the css syntax, line by line
@@ -13,14 +8,7 @@ import {
  * @param {String} val Value to be parsed
  */
 export const parse = (hash, val) => {
-    const normalized = val
-      .replace(NEW_LINES_SEL, NEW_LINE)
-      .replace(AT_SEL, NEW_LINE + "$&")
-      .replace(REGULAR_SEL, NEW_LINE + "$&")
-      .replace(COMMA_SEL, "," + NEW_LINE);
-  
-    return normalized
-      .split(NEW_LINE + NEW_LINE)
-      .map(block => parseBlock(hash, block).replace(/\n+/gi, ""));
-      ;
+    return getBlocks(astish(val), hash)
+      .map(item => parseBlock(hash, item))
+      .join("\n");
   };

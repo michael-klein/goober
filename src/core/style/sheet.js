@@ -1,4 +1,4 @@
-import { SHEET_ID } from "../constants";
+const SHEET_ID = "data-goober";
 
 let sheet;
 let styles = {};
