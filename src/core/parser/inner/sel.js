@@ -3,7 +3,7 @@ export const sel = (hash, rule = "", body) => {
       return `${hash} { ${body} }`;
     }
   
-    if (rule.indexOf("&") != -1 || rule[0] == "@" || rule.endsWith("%")) {
+    if (rule.indexOf("&") != -1 || rule[0] == "@" || rule.endsWith("%") || ["from", "to"].indexOf(rule) !== -1) {
       return `${rule.replace(/&/gim, hash)} { ${body} }`;
     }
   

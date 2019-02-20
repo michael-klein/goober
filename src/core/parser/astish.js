@@ -1,30 +1,17 @@
+const ruleStructure = /(?:([a-z0-9-%]+) *: *([^{;]+?);|([^;}{]*?) +({))/g;
+const ruleComma = /("|})(")/g;
+const ruleClean = /\/\*.*?\*\/|\s{2,}|\n/gm;
+
 export const astish = val => {
-    let out = val
+    let target = val = val.replace(ruleClean, "");
 
-    // Comments, Newline and spaces
-    .replace(/(\/\*([\s\S]*?)\*\/)|(\s{2,})/gm, "")
+    let block;
+    while ((block = ruleStructure.exec(target))) {
+        val = val.replace(block[0], '"' + (block[1] || block[3]) + '":' + (block[2] ? '"' + block[2] + '"' : block[4]));
+    }
+    
+    // Add the needed commas
+    val = val.replace(ruleComma, "$1,$2");
 
-    // "attribute": "value",
-    .replace(/([a-z0-9-%]+)\s*?:\s*([\sa-z0-9(),%-."'\/]+);/g, '"$1":"$2",')
-
-    // "selector": {
-    .replace(/([^;}{"]*?)\s{/g, '"$1": {')
-
-    // Double "", removal
-    .replace(/"",/g, '","')
-
-    // ",} -> "},
-    .replace(/(",})+/g, '"},')
-
-    // "},}" -> "}},"
-    .replace(/("},}")+/g, '"}},"')
-
-    // There's a special case, where sometimes nesting might result in braces with comma interlaced
-    .replace(/([}]+),([}]+)/g, '$1$2');
-
-    // // The string is ending into 
-    if (out.substr(-1) == ",") 
-        out = out.substr(0, out.length - 1);
-
-    return JSON.parse("{" + out + "}");
+    return JSON.parse("{" + val + "}");
 }
