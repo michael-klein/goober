@@ -14,6 +14,16 @@ describe("parse", () => {
                 foo: baz;
             }
 
+            &.level {
+                &.another {
+                    .foo {
+                        &.foo {
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+
             @keyframe name {
                 0% {
                     width: 0;
@@ -38,8 +48,6 @@ describe("parse", () => {
             "@media screen and (no-idea: valpx) { .hash { display: block; } .hash #red { color: red; } }"
         ].join("\n"));
     });
-
-
 
     it("cra", () => {
         const hash = ".App";
