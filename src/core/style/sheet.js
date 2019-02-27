@@ -1,50 +1,35 @@
-const SHEET_ID = "data-goober";
-
-let sheet;
-let styles = {};
-
+let SHEET_ID = "data-goober";
+let styles = "";
 /**
  * Returns the values and clear the styles
  * @return {Array}
  */
 export const flush = () => {
-  const values = Object.values(styles);
-  styles = {};
-  return values;
+  let s = styles;
+  styles = "";
+  return s;
 };
 
 /**
  * Adds the hash and it's css to cache and to appends it to stylesheet
- * @param {String} hash
  * @param {String} css
+ * @param {Element} target
  */
-export const add = (hash, css) => {
+export const add = (css, target) => {
+  if (~styles.indexOf(css)) {
+    return;
+  }
+  styles += css;
 
-    // If this is already present just stop
-    if (styles[hash] == css) {
-      return;
-    }
-  
-    // Keep the hash and the value in _cache_
-    styles[hash] = css;
-  
-    // If we're no the client
-    if (typeof document != "undefined") {
-      if (!sheet || !sheet.parentElement) {
-        sheet = document.querySelector("style[" + SHEET_ID + "]");
-  
-        if (!sheet) {
-          sheet = document.createElement("style");
-          sheet.setAttribute(SHEET_ID, "");
-          document.head.appendChild(sheet);
-        }
-      }
-  
-      if (!sheet.firstChild) {
-        sheet.appendChild(document.createTextNode(""));
-      }
-  
-      // Append the css into the style sheet
+  // If we're not the client
+  if (typeof document != "undefined" && (target = target || document.head)) {
+    let sheet = target.querySelector("style[" + SHEET_ID + "]");
+    if (!sheet) {
+      sheet = document.createElement("style");
+      sheet.setAttribute(SHEET_ID, "");
+      target.appendChild(sheet).innerHTML = css;
+    } else {
       sheet.firstChild.data += css;
     }
-  };
+  }
+};

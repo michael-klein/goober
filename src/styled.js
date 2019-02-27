@@ -2,7 +2,6 @@ import { getClassNameForCss } from "./core/style/get-class-name";
 import { getCss } from "./core/parser/get-css";
 
 let h;
-
 /**
  * Sets custom pragma to be used in contexts
  * @param {function} val
@@ -14,17 +13,21 @@ export const setPragma = val => (h = val);
  * @param {String} tag DOM tagName
  * @return {Function}
  */
-export const styled = tag =>
-  function() {
+export const styled = function(tag) {
+  const styledContext = this;
+  return function() {
+    const target = (styledContext || this || {}).target;
+    tag = tag == "global" ? 0 : tag;
     const args = [].slice.call(arguments);
     const processStyles = props => {
-      const className = getClassNameForCss(
-        getCss(args[0], args.slice(1), props)
+      let className = getClassNameForCss(
+        args[0].map ? getCss(args[0], args.slice(1), props) : args[0],
+        tag != 0,
+        target
       );
 
-      // To be used for 'vanilla'
+      // To be used for 'vanilla' or isGlobal
       if (!h || !tag) return className;
-
       return h(
         tag,
         Object.assign({}, props, {
@@ -35,3 +38,4 @@ export const styled = tag =>
     };
     return tag ? processStyles : processStyles();
   };
+};
