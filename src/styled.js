@@ -14,28 +14,33 @@ export const setPragma = val => (h = val);
  * @return {Function}
  */
 export const styled = function(tag) {
-  const styledContext = this;
+  const target = (this || {}).target;
+  const notGlob = tag != "global";
+
   return function() {
-    const target = (styledContext || this || {}).target;
-    tag = tag == "global" ? 0 : tag;
-    const args = [].slice.call(arguments);
+    const args = arguments;
+    const str = arguments[0];
+
     const processStyles = props => {
+      let p = props || {};
+
       let className = getClassNameForCss(
-        args[0].map ? getCss(args[0], args.slice(1), props) : args[0],
-        tag != 0,
+        str.map ? getCss(str, [].slice.call(args, 1), p) : str,
+        notGlob,
         target
       );
 
-      // To be used for 'vanilla' or isGlobal
-      if (!h || !tag) return className;
+      // To be used for 'vanilla'
+      if (!h || !(tag && notGlob)) return className;
+
+      p.className = p.className ? p.className + " " + className : className;
+
       return h(
         tag,
-        Object.assign({}, props, {
-          className:
-            (props && props.className ? props.className + " " : "") + className
-        })
+        p
       );
     };
-    return tag ? processStyles : processStyles();
+
+    return tag && notGlob ? processStyles : processStyles();
   };
 };
