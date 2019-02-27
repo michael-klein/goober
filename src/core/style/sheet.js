@@ -1,12 +1,34 @@
 let SHEET_ID = "data-goober";
-let styles = "";
+let ssrTarget = {
+  innerHTML: ""
+};
+/**
+ * Creates a sheet if needed and returns it. Returns ssrTarget for SSR
+ * @param {Element} target
+ * @return {Array}
+ */
+const getSheet = target => {
+  try {
+    if (!!document && (target = target || (ssrTarget = document.head))) {
+      let sheet = target.querySelector("style[" + SHEET_ID + "]");
+      if (!sheet) {
+        sheet = document.createElement("style");
+        sheet.setAttribute(SHEET_ID, "");
+        target.appendChild(sheet);
+      }
+      return sheet;
+    }
+  } catch (e) {}
+  return ssrTarget;
+};
 /**
  * Returns the values and clear the styles
  * @return {Array}
  */
 export const flush = () => {
-  let s = styles;
-  styles = "";
+  let sheet = getSheet();
+  let s = sheet.innerHTML;
+  sheet.innerHTML = "";
   return s;
 };
 
@@ -16,20 +38,9 @@ export const flush = () => {
  * @param {Element} target
  */
 export const add = (css, target) => {
-  if (~styles.indexOf(css)) {
-    return;
-  }
-  styles += css;
-
   // If we're not the client
-  if (typeof document != "undefined" && (target = target || document.head)) {
-    let sheet = target.querySelector("style[" + SHEET_ID + "]");
-    if (!sheet) {
-      sheet = document.createElement("style");
-      sheet.setAttribute(SHEET_ID, "");
-      target.appendChild(sheet).innerHTML = css;
-    } else {
-      sheet.firstChild.data += css;
-    }
+  const sheet = getSheet(target);
+  if (!~sheet.innerHTML.indexOf(css)) {
+    sheet.innerHTML += css;
   }
 };

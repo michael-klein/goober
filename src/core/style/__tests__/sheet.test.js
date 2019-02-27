@@ -26,11 +26,11 @@ describe("sheet", () => {
 
       expect(sheet.firstChild.nodeType).toEqual(3);
 
-      expect(sheet.firstChild.data).toEqual("one");
+      expect(sheet.innerHTML).toEqual("one");
 
       add("two", global.document.head);
 
-      expect(sheet.firstChild.data).toEqual("onetwo");
+      expect(sheet.innerHTML).toEqual("onetwo");
     });
 
     it("should not create the sheet on server-side", () => {
