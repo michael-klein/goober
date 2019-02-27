@@ -1,4 +1,4 @@
-let SHEET_ID = "data-goober";
+let SHEET_ID = "goober";
 let ssrTarget = {
   innerHTML: ""
 };
@@ -7,14 +7,14 @@ let ssrTarget = {
  * @param {Element} target
  * @return {Array}
  */
+
 const getSheet = target => {
   try {
     if ((target = target || (ssrTarget = document.head))) {
-      let sheet = target.querySelector("style[" + SHEET_ID + "]");
+      let sheet = target.querySelector("style[data-" + SHEET_ID + "]");
       if (!sheet) {
         sheet = document.createElement("style");
-        sheet.setAttribute(SHEET_ID, "");
-        target.appendChild(sheet);
+        target.appendChild(sheet).dataset[SHEET_ID] = 1;
       }
       return sheet;
     }
