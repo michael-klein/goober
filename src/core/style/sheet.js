@@ -9,7 +9,7 @@ let ssrTarget = {
  */
 const getSheet = target => {
   try {
-    if (!!document && (target = target || (ssrTarget = document.head))) {
+    if ((target = target || (ssrTarget = document.head))) {
       let sheet = target.querySelector("style[" + SHEET_ID + "]");
       if (!sheet) {
         sheet = document.createElement("style");
