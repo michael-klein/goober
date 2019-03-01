@@ -1,4 +1,4 @@
-import { add, flush } from "../sheet";
+import { add, flush, extractCss } from "../sheet";
 
 describe("sheet", () => {
   describe("add", () => {
@@ -24,8 +24,6 @@ describe("sheet", () => {
 
       expect(sheet.hasAttribute("data-goober")).toEqual(true);
 
-      expect(sheet.firstChild.nodeType).toEqual(3);
-
       expect(sheet.innerHTML).toEqual("one");
 
       add("two", global.document.head);
@@ -44,15 +42,9 @@ describe("sheet", () => {
     });
   });
 
-  describe("flush", () => {
-    it("flush the css", () => {
-      // Add a 'css' rule
-      add("flush");
-
-      expect(flush()).toEqual("flush");
-
-      // Second call should be empty string since it has been flushed
-      expect(flush()).toEqual("");
-    });
+  it("should extract CSS", () => {
+    add("flush");
+    expect(extractCss()).toEqual("<style data-goober>flush</style>");
+    expect(extractCss()).toEqual("<style data-goober></style>");
   });
 });

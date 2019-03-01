@@ -1,3 +1,3 @@
 export { styled, setPragma } from "./styled";
-export { extractCss } from "./extract-css";
+export { extractCss } from "./core/style/sheet";
 export { css } from "./css";
